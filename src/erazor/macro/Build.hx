@@ -120,7 +120,7 @@ class Build
 				else
 					"Dynamic";
 #if haxe_209
-			case TLazy( f ): typeToString(f());
+			case TLazy( f ): typeToString(f(), pos);
 #end
 		}
 	}
@@ -281,6 +281,7 @@ class Build
 			case EDisplay( e, isCall ): { expr:EDisplay(_recurse(e), isCall), pos:pos };
 			case EDisplayNew( t ): e;
 			case ETernary( econd, eif, eelse ): { expr:ETernary(_recurse(econd), _recurse(eif), _recurse(eelse)), pos:pos };
+			case ECheckType( e , t ) : e;
 		}
 	}
 	
