@@ -99,7 +99,7 @@ class Build
 		return ret;
 	}
 	
-	static function typeToString(type:Type, pos:Position):Null<String> 
+	static function typeToString(type:Type, ?pos:Position):Null<String> 
 	{
 		if (type == null)
 			return null;
@@ -392,6 +392,7 @@ class Build
 			case EDisplay( e, isCall ): { expr:EDisplay(_recurse(e), isCall), pos:pos(e.pos) };
 			case EDisplayNew( t ): e;
 			case ETernary( econd, eif, eelse ): { expr:ETernary(_recurse(econd), _recurse(eif), _recurse(eelse)), pos:pos(e.pos) };
+			default: throw "Not implemented";
 		}
 	}
 	
