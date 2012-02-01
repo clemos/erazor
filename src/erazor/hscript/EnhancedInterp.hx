@@ -24,7 +24,7 @@ class EnhancedInterp extends Interp
 		#if getter_support
 		 EnhancedReflect.getProperty(o,f);
 		#else
-		 Reflect.field( o , f );
+		 Reflect.getProperty( o , f );
 		#end
 	}
 	override function call( o : Dynamic, f : Dynamic, args : Array<Dynamic> ) : Dynamic {

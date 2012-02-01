@@ -14,9 +14,36 @@ class ReflectMacro {
 	#if macro 
 	public static function onGenerate( types : Array<Type> ){
 		for( type in types ){
+			//trace(type);
 			switch( type ){
+
 				case TInst( t , params ) :
-				
+					/*var isDynamic = false;
+					var s = t.get();
+					//while( s != null ){
+						trace(s.name);
+					
+						for( int in s.interfaces ){
+							trace(int);
+							if( int.t.get().name == "Dynamic" ){
+								isDynamic = true;
+							}
+						}
+					//	var sup = s.superClass;
+					//	if( sup == null || isDynamic ){
+					//		break;
+					//	}
+						
+					//	s = sup.t.get();
+						
+					//}
+
+					if( isDynamic ){
+
+						trace(t);
+						t.get().meta.add( "isDynamic" , [{ pos : Context.currentPos(), expr : EConst(CString("true")) }] , Context.currentPos() );
+					}*/
+
 					for( f in t.get().fields.get() ){
 						switch( f.kind ){
 							case FVar( read , write ) :

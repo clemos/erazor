@@ -6,6 +6,9 @@ class EnhancedReflect {
 	
 	public static function getProperty( o : Dynamic , field : String ){
 		
+		var v = Reflect.field( o , field );
+		if( v != null ) return v;
+
 		try{
 			var meta = Meta.getFields( Type.getClass( o ) );
 			var infos = Reflect.field( meta, field );
@@ -14,8 +17,15 @@ class EnhancedReflect {
 				if( getter != null ) return Reflect.callMethod( o , Reflect.field( o , getter[0] ) , [] );
 			}
 		}catch(e:Dynamic){}
-		
-		return Reflect.field( o , field );
+
+		try{
+			var meta = Meta.getType( Type.getClass(o) );
+			if( meta.resolve != null ){
+				return Reflect.callMethod( o , Reflect.field( o , "resolve" ) , [ field ] );
+			}
+		}catch(e:Dynamic){}
+
+		return null;
 		
 	}
 }
