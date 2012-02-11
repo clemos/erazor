@@ -18,7 +18,9 @@ class ReflectMacro {
 			switch( type ){
 
 				case TInst( t , params ) :
-					/*var isDynamic = false;
+					/*
+					// doesn't work, because interface Dynamic doesn't show up
+					var isDynamic = false;
 					var s = t.get();
 					//while( s != null ){
 						trace(s.name);
