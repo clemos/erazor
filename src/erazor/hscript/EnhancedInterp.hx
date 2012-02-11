@@ -17,8 +17,8 @@ class EnhancedInterp extends Interp
 		super();
 
 	}
-	override function get( o : Dynamic, f : String ) : Dynamic {
-		if( o == null ) throw Error.EInvalidAccess(f);
+	override function get( o : Dynamic, f : String , ?e:Expr = null ) : Dynamic {
+		if( o == null ) throw Error.InExpr(ErrorDef.EInvalidAccess(f), e);
 		
 		return 
 		#if getter_support
@@ -27,7 +27,7 @@ class EnhancedInterp extends Interp
 		 Reflect.getProperty( o , f );
 		#end
 	}
-	override function call( o : Dynamic, f : Dynamic, args : Array<Dynamic> ) : Dynamic {
+	override function call( o : Dynamic, f : Dynamic, args : Array<Dynamic> , ?e:Expr = null ) : Dynamic {
 #if php
 		while (true)
 		{
@@ -80,7 +80,11 @@ class EnhancedInterp extends Interp
 	}  
 #if php
 	override public function expr( e : Expr ) : Dynamic {
+		#if hscriptPos
+		switch( e.e ) {
+		#else
 		switch( e ) {
+		#end
 		case EFunction(params,fexpr,name,ret):
 			var capturedLocals = duplicate(locals);
 			var me = this;

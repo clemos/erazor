@@ -11,12 +11,14 @@ typedef PropertyObject = Dynamic;
 class Template
 {
 	private var template : String;
+	var name : String;
 	
 	public var variables(default, null) : Hash<Dynamic>;
 	
-	public function new(template : String)
+	public function new(template : String, ?name : String = "unknown")
 	{
 		this.template = template;
+		this.name = name;
 	}
 	
 	public function execute(?content : PropertyObject) : String
@@ -31,7 +33,7 @@ class Template
 		
 		// Make hscript parse and interpret the script.
 		var parser = new hscript.Parser();
-		var program = parser.parseString(script);
+		var program = parser.parseString( script , name );
 		
 		var interp = new EnhancedInterp();
 		
