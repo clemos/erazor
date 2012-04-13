@@ -139,9 +139,9 @@ class Build
 					"Dynamic<" + typeToString(t, pos) + ">";
 				else
 					"Dynamic";
-#if haxe_209
+			//#if haxe_209
 			case TLazy( f ): typeToString(f());
-#end
+			//#end
 		}
 	}
 	
@@ -230,7 +230,6 @@ class Build
 		executeBlock.push(Context.parse("return __b__.toString()", pos));
 		
 		//return new execute() field
-		
 		fields.push({
 			name:"execute",
 			doc:null,
