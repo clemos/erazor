@@ -107,8 +107,15 @@ class EnhancedInterp extends Interp
 			if( name != null )
 				variables.set(name,f);
 			return f;
-			default:
+		case EIdent(id):
+			// remove EUnknownVariable errors
+			try{
 				return super.expr(e);
+			}catch(err:Error){
+				return null;
+			}
+		default:
+			return super.expr(e);
 		}
 		return null;
 	}
