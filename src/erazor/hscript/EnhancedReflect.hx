@@ -5,7 +5,6 @@ import haxe.rtti.Meta;
 class EnhancedReflect {
 	
 	public static function getProperty( o : Dynamic , field : String ){
-		
 		var v = Reflect.field( o , field );
 		if( v != null ) return v;
 

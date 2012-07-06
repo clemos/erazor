@@ -27,7 +27,7 @@ class EnhancedInterp extends Interp
 		 Reflect.getProperty( o , f );
 		#end
 	}
-	override function call( o : Dynamic, f : Dynamic, args : Array<Dynamic> , ?e:Expr = null ) : Dynamic {
+	override function call( o : Dynamic, f : Dynamic, args : Array<Dynamic> , ?ex:Expr = null ) : Dynamic {
 #if php
 		while (true)
 		{
@@ -35,8 +35,9 @@ class EnhancedInterp extends Interp
 			{
 				return Reflect.callMethod(o,f,args);
 			} catch (e : String) {
-				if (e.substr(0, 16) != "Missing argument")
+				if (e.substr(0, 16) != "Missing argument"){
 					php.Lib.rethrow(e);
+				}
 				var expected = args.length + 1;
 				if (re.match(e))
 					expected = Std.parseInt(re.matched(1));
@@ -108,12 +109,14 @@ class EnhancedInterp extends Interp
 				variables.set(name,f);
 			return f;
 		case EIdent(id):
-			// remove EUnknownVariable errors
-			try{
-				return super.expr(e);
-			}catch(err:Error){
-				return null;
-			}
+			var l = locals.get(id);
+			if( l != null )
+				return l.r;
+			var v = variables.get(id);	
+			//if( v == null && !variables.exists(id) )
+			//	throw Error.InExpr(ErrorDef.EUnknownVariable(id), e);
+			return v;
+
 		default:
 			return super.expr(e);
 		}
