@@ -1,11 +1,8 @@
 package erazor;
 import erazor.error.ParserError;
 
-private typedef Block = {
-	var block : TBlock;
-	var start : Int;
-	var length : Int;
-}
+import erazor.Script;
+private typedef Block = ParsedBlock;
 
 private enum ParseContext {
 	literal;
@@ -348,11 +345,11 @@ class Parser
 	 * @param	template
 	 * @return
 	 */
-	public function parse(template : String) : Array<TBlock>
+	public function parse(template : String) : Array<Block>
 	{
 		this.pos = 0;
 		
-		var output = new Array<TBlock>();		
+		var output = new Array<Block>();		
 		bracketStack = [];
 		conditionalStack = 0;
 		
@@ -362,7 +359,7 @@ class Parser
 			var block = parseBlock(template);
 			
 			if(block.block != null)
-				output.push(block.block);
+				output.push(block);
 				
 			template = template.substr(block.length);
 			this.pos += block.length;

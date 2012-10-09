@@ -11,30 +11,39 @@ typedef PropertyObject = Dynamic;
 class Template
 {
 	private var template : String;
-	var name : String;
 	
 	public var variables(default, null) : Hash<Dynamic>;
+	var script : erazor.Script;
+	var program : hscript.Expr;
+
+	@macro static function enablePos(){
+		#if macro
+			haxe.macro.Compiler.define("erazorPos");
+			haxe.macro.Compiler.define("hscriptPos");
+		#end
+	}
 	
-	public function new(template : String, ?name : String = "unknown")
+	public function new( template : String )
 	{
+
 		this.template = template;
-		this.name = name;
+		
+		var parsedBlocks = new Parser().parse(template);
+		
+		// Make a hscript with the buffer as context.
+		script = new ScriptBuilder('__b__').build(parsedBlocks);
+		
+		// Make hscript parse and interpret the script.
+		var parser = new hscript.Parser();
+		
+		program = parser.parseString( script.src );
+	
 	}
 	
 	public function execute(?content : PropertyObject) : String
 	{
 		var buffer = new StringBuf();
-		
-		// Parse the template into TBlocks for the HTemplateParser
-		var parsedBlocks = new Parser().parse(template);
-		
-		// Make a hscript with the buffer as context.
-		var script = new ScriptBuilder('__b__').build(parsedBlocks);
-		
-		// Make hscript parse and interpret the script.
-		var parser = new hscript.Parser();
-		var program = parser.parseString( script , name );
-		
+			
 		var interp = new EnhancedInterp();
 		
 		variables = interp.variables;
@@ -53,11 +62,36 @@ class Template
 			return bufferStack.pop();
 		});
 		
-		interp.execute(program);
+		#if( erazorPos )
+			try{
+				interp.execute(program);
+			}catch( e : hscript.Expr.Error ){
+				throw hscriptError( e );
+			}
+		#else
+			interp.execute(program);
+		#end
 
 		// The buffer now holds the output.
 		return buffer.toString();
 	}
+
+	#if( erazorPos )
+	private function hscriptError( e : hscript.Expr.Error ){
+		
+		var prev = 0;
+		for( k in script.map.keys() ){
+			if( k > e.pmin ){
+				break;
+			}
+			prev = k;
+		}
+
+		var pos = script.map.get(prev);
+		return new erazor.error.InterpError( pos , e );
+		
+	}
+	#end
 	
 	private function setInterpreterVars(interp : Interp, content : PropertyObject) : Void
 	{
