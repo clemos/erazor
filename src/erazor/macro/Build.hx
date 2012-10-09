@@ -141,7 +141,9 @@ class Build
 					"Dynamic";
 #if haxe_209
 			case TLazy( f ): typeToString(f(), pos);
+			case TAbstract( a , b ) : throw "not implemented";
 #end
+			
 		}
 	}
 
@@ -184,7 +186,7 @@ class Build
 		{
 			//we'll include a no-op so we can distinguish the blocks.
 			buildedBlocks.add("__blockbegin__;\n");
-			buildedBlocks.add(builder.blockToString(block.block));
+			buildedBlocks.add(builder.blockToString(block));
 		}
 		buildedBlocks.add("}");
 

@@ -88,7 +88,7 @@ class Template
 		}
 
 		var pos = script.map.get(prev);
-		return new erazor.error.InterpError( pos , e );
+		return new erazor.error.InterpError( pos , e.e );
 		
 	}
 	#end
