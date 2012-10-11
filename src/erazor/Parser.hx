@@ -79,7 +79,7 @@ class Parser
 		}
 		
 		//trace(startBrace); trace(endBrace);
-		throw new ParserError( 'Failed to find a closing delimiter for the script block: ', this.pos, template.substr(0, 100) );
+		throw new ParserError( 'Failed to find a closing delimiter for the script block', this.pos, template.substr(0, 100) );
 	}
 	
 	function parseContext(template : String) : ParseContext
@@ -285,7 +285,7 @@ class Parser
 		}
 		
 		if(throwAtEnd)
-			throw new ParserError( 'Failed to find a closing delimiter: ', this.pos, str.substr(0, 100) );
+			throw new ParserError( 'Failed to find a closing delimiter', this.pos, str.substr(0, 100) );
 	
 		return str;
 	}
