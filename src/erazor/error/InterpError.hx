@@ -4,11 +4,11 @@ package erazor.error;
 class InterpError {
 
 	public var pos (default, null): Script.Pos;
-	public var err (default, null): hscript.Expr.ErrorDef;
+	public var msg (default, null): String;
 
-	public function new( pos , err ){
+	public function new( pos , msg ){
 		this.pos = pos;
-		this.err = err;
+		this.msg = msg;
 	}
 
 }
