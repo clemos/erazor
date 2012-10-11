@@ -1,5 +1,6 @@
 package erazor;
 
+import hscript.Expr.Error;
 import hscript.Interp;
 import erazor.hscript.EnhancedInterp;
 
@@ -36,7 +37,17 @@ class Template
 		// Make hscript parse and interpret the script.
 		var parser = new hscript.Parser();
 		
-		program = parser.parseString( script.src );
+		#if( erazorPos )
+			try{
+				program = parser.parseString( script.src );
+			}catch( e : hscript.Expr.Error ){
+				throw hscriptError( e );
+			}
+		#else
+			program = parser.parseString( script.src );
+		#end
+
+		
 	
 	}
 	
@@ -77,7 +88,7 @@ class Template
 	}
 
 	#if( erazorPos )
-	private function hscriptError( e : hscript.Expr.Error ){
+	private function hscriptError( e : Error ){
 		
 		var prev = 0;
 		for( k in script.map.keys() ){
@@ -88,7 +99,16 @@ class Template
 		}
 
 		var pos = script.map.get(prev);
-		return new erazor.error.InterpError( pos , e.e );
+		var msg = switch( e.e ){
+			case EUnexpected( str ) : 
+				if( str == "__b__" ) {
+					"Missing semi-colon (;)";
+				}else{
+					"Unexpected " + str;
+				}
+			default : Std.string(e.e);
+		}
+		return new erazor.error.InterpError( pos , msg );
 		
 	}
 	#end
