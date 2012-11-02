@@ -396,6 +396,7 @@ class Build
 			case ETernary( econd, eif, eelse ): { expr:ETernary(_recurse(econd), _recurse(eif), _recurse(eelse)), pos:pos(e.pos) };
 #if haxe_209
 			case ECheckType( e, t ): { expr:ECheckType(_recurse(e), t), pos:pos(e.pos) };
+			case EMeta( e1 , e2 ) : throw "Not implemented";
 #end
 		}
 	}
