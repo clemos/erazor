@@ -110,7 +110,7 @@ class Build
 				var t2 = t.get();
 				typeToString(t2, pos);
 			case TEnum( t, params ): t.toString() + args(params, pos);
-			case TInst( t, params ): t.toString() + args(params, pos);
+			case TInst( t, params ): t.toString().split("+").join("") + args(params, pos);
 			case TType( t, params ): t.toString() + args(params, pos);
 			case TFun( args, ret ): Lambda.map(args, function(arg) return typeToString(arg.t, pos)).join("->") + "->" + typeToString(ret, pos);
 			case TAnonymous( a ):
@@ -396,6 +396,8 @@ class Build
 			case ETernary( econd, eif, eelse ): { expr:ETernary(_recurse(econd), _recurse(eif), _recurse(eelse)), pos:pos(e.pos) };
 #if haxe_209
 			case ECheckType( e, t ): { expr:ECheckType(_recurse(e), t), pos:pos(e.pos) };
+#end
+#if haxe_211
 			case EMeta( e1 , e2 ) : throw "Not implemented";
 #end
 		}
