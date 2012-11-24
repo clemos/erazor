@@ -36,19 +36,18 @@ class ScriptBuilder
 	
 	public function blockToString(block : Block) : String
 	{
-		return switch(block.block)
+		var o = null;
+		switch(block.block)
 		{
 			case literal(s):
-				return context + ".add('" + StringTools.replace(s, "'", "\\'") + "');";
+				o = context + ".add('" + StringTools.replace(s, "'", "\\'") + "');";
 			
 			case codeBlock(s):
-				return s+"\n";
+				o = s+"\n";
 			
 			case printBlock(s):
-				return context + ".add(" + s + ");";
+				o = context + ".add(" + s + ");";
 		}
-		
-		
-
+		return o;	
 	}
 }

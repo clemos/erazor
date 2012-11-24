@@ -37,7 +37,7 @@ class Template
 		// Make hscript parse and interpret the script.
 		var parser = new hscript.Parser();
 		
-		#if( erazorPos )
+		#if erazorPos
 			try{
 				program = parser.parseString( script.src );
 			}catch( e : hscript.Expr.Error ){
@@ -62,7 +62,6 @@ class Template
 		var bufferStack = [];
 		
 		setInterpreterVars(interp, content);
-		
 		interp.variables.set('__b__', buffer); // Connect the buffer to the script
 		interp.variables.set('__string_buf__', function(current) {
 			bufferStack.push(current);
@@ -73,7 +72,7 @@ class Template
 			return bufferStack.pop();
 		});
 		
-		#if( erazorPos )
+		#if erazorPos
 			try{
 				interp.execute(program);
 			}catch( e : hscript.Expr.Error ){
@@ -87,7 +86,7 @@ class Template
 		return buffer.toString();
 	}
 
-	#if( erazorPos )
+	#if erazorPos 
 	private function hscriptError( e : Error ){
 		
 		var prev = 0;
