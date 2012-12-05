@@ -367,7 +367,26 @@ class Build
 				var ret = { expr:EBlock(exprs.map(_recurse).array()), pos:pos(e.pos) };
 				declaredVars.pop();
 				ret;
-			case EFor( it, expr ): { expr:EFor(_recurse(it), _recurse(expr)), pos:pos(e.pos) };
+			case EFor( it, expr ): 
+				it.expr = switch( it.expr ){
+					case EIn( i , set ):
+						EIn( i , { 
+							pos : pos(e.pos) , 
+							expr : ECheckType( set , TPath( {
+								pack : [],
+								name : "Iterable",
+								params : [ TPType( TPath( {
+									pack : [],
+									name : "Dynamic",
+									params : []
+								} ) ) ]
+							} ) ) 
+						} );
+					default : 
+						it.expr;
+				}
+				var ret = { expr:EFor(_recurse(it), _recurse(expr)), pos:pos(e.pos) };
+				ret;
 			case EIn( e1, e2 ):
 				switch(e1.expr)
 				{
