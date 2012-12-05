@@ -61,12 +61,20 @@ class Build
 					pos.max--;
 					return build(s, Context.makePosition(pos), t);
 				case ":includeTemplate", "includeTemplate":
-					var srcLocation = Context.resolvePath(cls.module.split(".").join("/") + ".hx");
-					var path = srcLocation.split("/");
-					path.pop();
-
+					var path = try { 
+						var srcLocation = Context.resolvePath(cls.module.split(".").join("/") + ".hx");
+						var p = srcLocation.split("/");
+						p.pop();
+						p;
+					}catch(e:Dynamic){
+						[];
+					}
+					
 					var templatePath = getString(meta.params[0]);
-					templatePath = path.join("/") + "/" + templatePath;
+					
+					if( path.length > 0 ){
+						templatePath = path.join("/") + "/" + templatePath;
+					}
 
 					if (! FileSystem.exists(templatePath)) throw new Error("File " + templatePath + " not found.", meta.params[0].pos);
 					
