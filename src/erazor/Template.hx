@@ -50,10 +50,14 @@ class Template
 		
 	
 	}
+
+	public dynamic function escape( str ){
+		return str;
+	}
 	
 	public function execute(?content : PropertyObject) : String
 	{
-		var buffer = new StringBuf();
+		var buffer = new Output(escape);
 			
 		var interp = new EnhancedInterp();
 		

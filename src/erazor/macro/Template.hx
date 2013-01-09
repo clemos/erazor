@@ -13,6 +13,10 @@ class Template<T>
 
 	}
 
+	public dynamic function escape( str ){ 
+		return str;
+	}
+
 #if display
 	public function execute(context:T):String
 	{

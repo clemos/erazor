@@ -230,7 +230,7 @@ class Build
 		var fields = [];
 		var executeBlock = [];
 
-		var bvar = switch(Context.parse("{var __b__ = new StringBuf();}", pos).expr)
+		var bvar = switch(Context.parse("{var __b__ = new erazor.Output(escape);}", pos).expr)
 		{
 			case EBlock(b): b[0];
 			default:throw "assert";
@@ -238,6 +238,7 @@ class Build
 
 		//var __b__ = new StringBuf();
 		executeBlock.push(bvar);
+
 		//the executed script
 		executeBlock.push(expr);
 		executeBlock.push(Context.parse("return __b__.toString()", pos));
