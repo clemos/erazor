@@ -20,7 +20,7 @@ typedef SafeString = TString;
 class UnsafeString extends TString {
 	
 	public dynamic function escape( str ){
-		return StringTools.htmlEscape( str );
+		return StringTools.htmlEscape( str , true );
 	}
 	
 	public override function new( s , escapeMethod = null ){
@@ -38,7 +38,8 @@ class UnsafeString extends TString {
 class Output extends StringBuf {
 
 	public function new( escapeMethod = null ){
-		if( escapeMethod != null ) escape = escapeMethod;
+		if( escapeMethod != null ) 
+			escape = escapeMethod;
 		super();
 	}
 

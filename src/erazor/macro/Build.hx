@@ -230,7 +230,7 @@ class Build
 		var fields = [];
 		var executeBlock = [];
 
-		var bvar = switch(Context.parse("{var __b__ = new erazor.Output(escape);}", pos).expr)
+		var bvar = switch(Context.parse("{var __b__ = new erazor.Output((__context__.escape==null)?escape:__context__.escape);}", pos).expr)
 		{
 			case EBlock(b): b[0];
 			default:throw "assert";

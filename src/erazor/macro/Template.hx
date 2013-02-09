@@ -13,9 +13,9 @@ class Template<T>
 
 	}
 
-	public dynamic function escape( str ){ 
-		return str;
-	}
+	public dynamic function escape( str : String ) : String 
+		return str
+	
 
 #if display
 	public function execute(context:T):String
