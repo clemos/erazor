@@ -5,10 +5,20 @@ import erazor.ScriptBuilder;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
+
+#if haxe3
+import sys.FileSystem;
+import sys.io.File;
+#else
 import neko.FileSystem;
 import neko.io.File;
+#end
 
 using Lambda;
+
+#if haxe3 
+typedef Hash<T> = Map<String,T>;
+#end
 /**
  * ...
  * @author Waneck
@@ -100,7 +110,7 @@ class Build
 				switch(c)
 				{
 					case CString(s): s;
-					case CIdent(s), CType(s): if (acceptIdent) s; else null;
+					case CIdent(s) #if !haxe3 , CType(s) #end: if (acceptIdent) s; else null;
 					default: null;
 				}
 			default: null;
@@ -122,6 +132,7 @@ class Build
 				typeToString(t2, pos);
 			case TEnum( t, params ): t.toString() + args(params, pos);
 			case TInst( t, params ): t.toString().split("+").join("") + args(params, pos);
+			
 			case TType( t, params ): t.toString() + args(params, pos);
 			case TFun( args, ret ): Lambda.map(args, function(arg) return typeToString(arg.t, pos)).join("->") + "->" + typeToString(ret, pos);
 			case TAnonymous( a ):
@@ -150,9 +161,9 @@ class Build
 					"Dynamic<" + typeToString(t, pos) + ">";
 				else
 					"Dynamic";
-#if haxe_209
+#if (haxe_209 || haxe3)
 			case TLazy( f ): typeToString(f(), pos);
-			case TAbstract( a , b ) : throw "not implemented";
+			case TAbstract( _ , _ ) : throw "not implemented";
 #end
 			
 		}
@@ -320,7 +331,7 @@ class Build
 			case EArray( e1, e2 ): { expr:EArray(_recurse(e1), _recurse(e2)), pos:pos(e.pos) };
 			case EBinop( op, e1, e2): { expr:EBinop(op, _recurse(e1), _recurse(e2)), pos:pos(e.pos) };
 			case EField( e1, field ): { expr:EField(changeExpr(e1, contextExpr, declaredVars, curPosInfo, false, isType), field), pos:pos(e.pos) };
-			case EType( e1, field ): { expr:EType(changeExpr(e1, contextExpr, declaredVars, curPosInfo, false, true), field), pos:pos(e.pos) };
+			#if !haxe3 case EType( e1, field ): { expr:EType(changeExpr(e1, contextExpr, declaredVars, curPosInfo, false, true), field), pos:pos(e.pos) }; #end
 			case EParenthesis( e1 ):  { expr:EParenthesis(changeExpr(e1, contextExpr, declaredVars, curPosInfo, inCase, isType)), pos:pos(e.pos) };
 			case EObjectDecl( fields ): { expr:EObjectDecl(fields.map(function(f) return { field:f.field, expr:_recurse(f.expr) } ).array()), pos:pos(e.pos) };
 			case EArrayDecl( values ): { expr:EArrayDecl(values.map(_recurse).array()), pos:pos(e.pos) };
@@ -394,7 +405,7 @@ class Build
 					case EConst(c):
 						switch(c)
 						{
-							case CIdent(s), CType(s): addVar(s, declaredVars);
+							case CIdent(s) #if !haxe3, CType(s) #end: addVar(s, declaredVars);
 							default:
 						}
 					default:
@@ -410,6 +421,7 @@ class Build
 						declaredVars.push(new Hash());
 						var ret = {
 							values:c.values.map(function(e) return changeExpr(e, contextExpr, declaredVars, curPosInfo, true)).array(),
+							#if haxe3 guard : null, #end
 							expr:_recurse(c.expr)
 						};
 						declaredVars.pop();
@@ -423,13 +435,13 @@ class Build
 			case EThrow( e ): { expr:EThrow(_recurse(e)), pos:pos(e.pos) };
 			case ECast( e, t ): { expr:ECast(_recurse(e), t), pos:pos(e.pos) };
 			case EDisplay( e, isCall ): { expr:EDisplay(_recurse(e), isCall), pos:pos(e.pos) };
-			case EDisplayNew( t ): e;
+			case EDisplayNew( _ ): e;
 			case ETernary( econd, eif, eelse ): { expr:ETernary(_recurse(econd), _recurse(eif), _recurse(eelse)), pos:pos(e.pos) };
-#if haxe_209
+#if ( haxe_209 || haxe3 )
 			case ECheckType( e, t ): { expr:ECheckType(_recurse(e), t), pos:pos(e.pos) };
 #end
-#if haxe_211
-			case EMeta( e1 , e2 ) : throw "Not implemented";
+#if ( haxe_211 || haxe3 )
+			case EMeta( _ , _ ) : throw "Not implemented";
 #end
 		}
 	}

@@ -1,5 +1,9 @@
 ﻿package erazor;
 
+#if haxe3
+typedef IntHash<T> = Map<Int,T>
+#end
+
 typedef Script = {
 	src : String,
 	map : IntHash<Pos>

@@ -14,7 +14,7 @@ class Template<T>
 	}
 
 	public dynamic function escape( str : String ) : String 
-		return str
+		return str;
 	
 
 #if display

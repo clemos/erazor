@@ -48,12 +48,12 @@ class Parser
 			
 			if(!insideDoubleQuote && !insideSingleQuote)
 			{
-				switch(char)
+				switch(true)
 				{
-					case startBrace:
+					case _ if(char == startBrace):
 						++stack;
 
-					case endBrace:
+					case _ if( char == endBrace ):
 						--stack;
 						
 						if(stack == 0)
@@ -61,10 +61,10 @@ class Parser
 						if (stack < 0)
 							throw new ParserError( 'Unbalanced braces for block: ', pos,  template.substr(0, 100) );
 					
-					case '"':
+					case _ if( char == '"' ):
 						insideDoubleQuote = true;
 						
-					case "'":
+					case _ if( char == "'" ):
 						insideSingleQuote = true;
 				}
 			}
@@ -80,6 +80,7 @@ class Parser
 		
 		//trace(startBrace); trace(endBrace);
 		throw new ParserError( 'Failed to find a closing delimiter for the script block', this.pos, template.substr(0, 100) );
+		return "";
 	}
 	
 	function parseContext(template : String) : ParseContext
